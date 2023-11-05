@@ -1,8 +1,23 @@
 import { Avatar, Dropdown, Navbar } from "flowbite-react";
 import { NavLink } from "react-router-dom";
 import "./NavBar.css";
+import useAuthData from "../../Hooks/useAuthData/useAuthData";
+import Swal from "sweetalert2";
 
 const NavBar = () => {
+  const { user, logOut } = useAuthData();
+
+  const handleSignOut = () => {
+    logOut().then(() => {
+      Swal.fire({
+        title: "Success!",
+        text: "Sign Out Successfull",
+        icon: "success",
+        confirmButtonText: "Ok",
+      });
+    });
+  };
+
   return (
     <Navbar className="mt-3" fluid rounded>
       <Navbar.Brand>
@@ -11,27 +26,22 @@ const NavBar = () => {
         </p>
       </Navbar.Brand>
       <div className="flex md:order-2">
-        <Dropdown
-          arrowIcon={false}
-          inline
-          label={
-            <Avatar
-              alt="User settings"
-              img="https://flowbite.com/docs/images/people/profile-picture-5.jpg"
-              rounded
-            />
-          }
-        >
-          <Dropdown.Header>
-            <span className="block text-sm">Bonnie Green</span>
-            <span className="block truncate text-sm font-medium">
-              name@flowbite.com
-            </span>
-          </Dropdown.Header>
-          <Dropdown.Divider />
-          <Dropdown.Item>Sign out</Dropdown.Item>
-        </Dropdown>
-        <Navbar.Toggle />
+        {user && (
+          <Dropdown
+            arrowIcon={false}
+            inline
+            label={<Avatar alt="User settings" img={user?.photoURL} rounded />}
+          >
+            <Dropdown.Header>
+              <span className="block text-sm">{user?.displayName}</span>
+              <span className="block truncate text-sm font-medium">
+                {user?.email}
+              </span>
+            </Dropdown.Header>
+            <Dropdown.Item onClick={handleSignOut}>Sign out</Dropdown.Item>
+          </Dropdown>
+        )}
+        {/* <Navbar.Toggle /> */}
       </div>
       <Navbar.Collapse className=" bg-base-200 md:bg-white p-5 md:p-0 rounded md:rounded-none mt-6 md:mt-0">
         <li>
