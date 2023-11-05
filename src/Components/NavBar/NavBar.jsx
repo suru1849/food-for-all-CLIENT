@@ -34,14 +34,14 @@ const NavBar = () => {
           >
             <Dropdown.Header>
               <span className="block text-sm">{user?.displayName}</span>
-              <span className="block truncate text-sm font-medium">
+              <span className="block truncate text-sm font-medium text-red-600">
                 {user?.email}
               </span>
             </Dropdown.Header>
             <Dropdown.Item onClick={handleSignOut}>Sign out</Dropdown.Item>
           </Dropdown>
         )}
-        {/* <Navbar.Toggle /> */}
+        <Navbar.Toggle />
       </div>
       <Navbar.Collapse className=" bg-base-200 md:bg-white p-5 md:p-0 rounded md:rounded-none mt-6 md:mt-0">
         <li>
