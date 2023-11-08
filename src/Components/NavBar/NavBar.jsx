@@ -62,9 +62,13 @@ const NavBar = () => {
           <li>
             <NavLink to="/my-food-request">My Food Request</NavLink>
           </li>
-          <li>
-            <NavLink to="/login">Login</NavLink>
-          </li>
+          {!user?.email ? (
+            <li>
+              <NavLink to="/login">Login</NavLink>
+            </li>
+          ) : (
+            <li></li>
+          )}
         </Navbar.Collapse>
       </Navbar>
       <hr />

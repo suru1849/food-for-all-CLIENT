@@ -40,7 +40,17 @@ const FoodDetails = () => {
       donator: food?.donator,
     };
 
-    console.log(requestedFood);
+    if (food?.donator?.donatorEmail === user?.email) {
+      Swal.fire({
+        title: "Error!",
+        text: "You request for your own added food",
+        icon: "error",
+        confirmButtonText: "opps",
+      });
+
+      return navigate("/available-foods");
+    }
+
     // added requested food
     axios
       .post("http://localhost:5000/requestedFood", requestedFood)
