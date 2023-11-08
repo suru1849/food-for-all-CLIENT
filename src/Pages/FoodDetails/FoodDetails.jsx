@@ -1,10 +1,13 @@
 import { Helmet, HelmetProvider } from "react-helmet-async";
-import { useLoaderData } from "react-router-dom";
+import { useLoaderData, useNavigate } from "react-router-dom";
 import useAuthData from "../../Hooks/useAuthData/useAuthData";
+import axios from "axios";
+import Swal from "sweetalert2";
 
 const FoodDetails = () => {
   const [food] = useLoaderData();
   const { user } = useAuthData();
+  const navigate = useNavigate();
 
   const {
     _id,
@@ -14,7 +17,45 @@ const FoodDetails = () => {
     foodQuantity,
     pickupLocation,
     expiredDateTime,
-  } = food;
+  } = food || {};
+
+  const handleRequest = (e) => {
+    e.preventDefault();
+
+    const form = e.target;
+    const donationMoney = form.donationMoney.value;
+    const AdditionlNotes = form.AdditionlNotes.value;
+    const requestedDate = form.requestedDate.value;
+
+    const requestedFood = {
+      useEmail: user?.email,
+      donationMoney,
+      AdditionlNotes,
+      requestedDate,
+      food,
+      donator: food?.donator,
+    };
+
+    console.log(requestedFood);
+    // added requested food
+    axios
+      .post("http://localhost:5000/requestedFood", requestedFood)
+      .then((res) => {
+        if (res.data.insertedId) {
+          Swal.fire({
+            title: "Success!",
+            text: "Food request successfully",
+            icon: "success",
+            confirmButtonText: "Ok",
+          });
+
+          // navigate
+          navigate("/available-foods");
+          // from clear
+          form.reset();
+        }
+      });
+  };
 
   return (
     <HelmetProvider>
@@ -77,7 +118,7 @@ const FoodDetails = () => {
             {/* Open the modal using document.getElementById('ID').showModal() method */}
             <dialog id="my_modal_1" className="modal pt-14">
               <div className=" modal-box ">
-                <form>
+                <form onSubmit={handleRequest}>
                   <div className="grid gap-6 mb-6 md:grid-cols-2">
                     <div>
                       <label
@@ -122,7 +163,7 @@ const FoodDetails = () => {
                       </label>
                       <input
                         type="text"
-                        name="DonatorName"
+                        name="donatorName"
                         defaultValue={donator.donatorName}
                         className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                         placeholder="food quantity"
@@ -139,7 +180,7 @@ const FoodDetails = () => {
                       </label>
                       <input
                         type="text"
-                        name="DonatorEmail"
+                        name="donatorEmail"
                         defaultValue={donator.donatorEmail}
                         className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                         placeholder="food quantity"
@@ -173,7 +214,7 @@ const FoodDetails = () => {
                       </label>
                       <input
                         type="text"
-                        name="pickUpLocation"
+                        name="pickupLocation"
                         defaultValue={pickupLocation}
                         className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                         placeholder="pick up location"
@@ -190,7 +231,7 @@ const FoodDetails = () => {
                       </label>
                       <input
                         type="text"
-                        name="expired-date/time"
+                        name="expiredDateTime"
                         defaultValue={expiredDateTime.split("T")[0]}
                         className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                         placeholder="expired date/time"
@@ -224,7 +265,7 @@ const FoodDetails = () => {
                       </label>
                       <input
                         type="text"
-                        name="additionlNotes"
+                        name="AdditionlNotes"
                         className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                         placeholder="additional notes"
                         required
@@ -250,7 +291,7 @@ const FoodDetails = () => {
                     <input
                       className="btn btn-primary w-full"
                       type="submit"
-                      value="Add Food"
+                      value="Request"
                     />
                   </div>
                 </form>
