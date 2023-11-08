@@ -11,7 +11,7 @@ export default {
       "varela-round": " 'Varela Round', sans-serif",
     },
     backgroundImage: {
-      addFoodBanner: "url('/src/assets/foodBanner.jpg')",
+      addFoodBanner: "url('./src/assets/foodBanner.jpg')",
     },
   },
   plugins: [require("daisyui"), require("flowbite/plugin")],
