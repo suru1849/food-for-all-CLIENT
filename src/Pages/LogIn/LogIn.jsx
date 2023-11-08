@@ -1,10 +1,12 @@
-import { Link } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import useAuthData from "../../Hooks/useAuthData/useAuthData";
 import Swal from "sweetalert2";
 import { Helmet, HelmetProvider } from "react-helmet-async";
 
 const LogIn = () => {
   const { signIn } = useAuthData();
+  const navigate = useNavigate();
+  const location = useLocation();
 
   const handleLogIN = (e) => {
     e.preventDefault();
@@ -25,6 +27,9 @@ const LogIn = () => {
 
         // clear form
         form.reset();
+
+        // navigate
+        navigate(location?.state ? location.state : "/");
       })
       .catch(() => {
         Swal.fire({
