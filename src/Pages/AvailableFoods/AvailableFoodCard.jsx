@@ -1,7 +1,9 @@
 import PropTypes from "prop-types";
+import { Link } from "react-router-dom";
 
 const AvailableFoodCard = ({ food }) => {
   const {
+    _id,
     foodName,
     foodImage,
     foodQuantity,
@@ -59,9 +61,9 @@ const AvailableFoodCard = ({ food }) => {
               <p className="font-bold">{donator.donatorName}</p>
             </div>
             <div className="flex justify-end">
-              <button className="btn btn-success text-right ">
+              <Link to={`/food/${_id}`} className="btn btn-success text-right ">
                 View Details
-              </button>
+              </Link>
             </div>
           </div>
         </div>

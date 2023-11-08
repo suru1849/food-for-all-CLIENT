@@ -82,7 +82,7 @@ const AvailableFoods = () => {
           <div className="w-1/2 md:w-[25%] mt-10 mb-5">
             <label
               htmlFor="countries"
-              className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+              className="block mb-2 font-bold text-sm  text-gray-900 dark:text-white"
             >
               Sort By
             </label>
