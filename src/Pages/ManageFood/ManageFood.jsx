@@ -1,4 +1,5 @@
 import { useLoaderData, useNavigate } from "react-router-dom";
+import Swal from "sweetalert2";
 
 const ManageFood = () => {
   const navigate = useNavigate();
@@ -6,7 +7,31 @@ const ManageFood = () => {
 
   console.log(reqfood);
 
-  const { requester, requestedDate, food } = reqfood || {};
+  const { _id, requester, requestedDate, food } = reqfood || {};
+
+  const handleStatus = () => {
+    Swal.fire({
+      title: "Are you sure?",
+      text: "You won't be able to revert this!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, delivered it!",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        fetch("http://localhost:5000/availableFood/update", {
+          method: "PUT",
+          headers: {
+            "content-type": "application/json",
+          },
+          body: JSON.stringify(food),
+        })
+          .then((res) => res.json())
+          .then((data) => console.log(data));
+      }
+    });
+  };
 
   return (
     <div>
@@ -41,7 +66,14 @@ const ManageFood = () => {
                 <td>{requestedDate?.split(", ")[1]}</td>
                 <td>{requestedDate?.split(", ")[0]}</td>
                 <th>
-                  <button className="btn btn-success btn-xs">
+                  <button
+                    onClick={handleStatus}
+                    className={`btn ${
+                      food?.foodStatus === "available"
+                        ? "btn-success"
+                        : "btn-error"
+                    } btn-xs`}
+                  >
                     {food?.foodStatus}
                   </button>
                 </th>
