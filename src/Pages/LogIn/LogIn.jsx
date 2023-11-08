@@ -2,9 +2,10 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import useAuthData from "../../Hooks/useAuthData/useAuthData";
 import Swal from "sweetalert2";
 import { Helmet, HelmetProvider } from "react-helmet-async";
+import { FcGoogle } from "react-icons/fc";
 
 const LogIn = () => {
-  const { signIn } = useAuthData();
+  const { signIn, googleSignIn } = useAuthData();
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -41,6 +42,29 @@ const LogIn = () => {
       });
   };
 
+  const handleGoogle = () => {
+    googleSignIn()
+      .then(() => {
+        Swal.fire({
+          title: "Success!",
+          text: "Sign In with GOOGLE Successfull",
+          icon: "success",
+          confirmButtonText: "Ok",
+        });
+
+        // navigate
+        navigate(location?.state ? location.state : "/");
+      })
+      .catch(() => {
+        Swal.fire({
+          title: "Error!",
+          text: "Sign In with valid GOOGLE account",
+          icon: "error",
+          confirmButtonText: "opps",
+        });
+      });
+  };
+
   return (
     <HelmetProvider>
       <Helmet>
@@ -56,7 +80,7 @@ const LogIn = () => {
             </p>
           </div>
           <div className="card flex-shrink-0 w-full max-w-sm shadow-2xl bg-base-100">
-            <form className="card-body" onSubmit={handleLogIN}>
+            <form className="card-body mb-0" onSubmit={handleLogIN}>
               <div className="form-control">
                 <label className="label">
                   <span className="label-text">Email</span>
@@ -89,6 +113,11 @@ const LogIn = () => {
                 />
               </div>
             </form>
+            <div className="card-body -mt-10">
+              <button onClick={handleGoogle} className="btn btn-outline w-full">
+                Sign In with <FcGoogle></FcGoogle>
+              </button>
+            </div>
             <div className="text-center pb-5">
               New to this site?
               <Link className="text-red-600 font-bold" to="/register">
