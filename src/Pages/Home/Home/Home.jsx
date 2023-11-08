@@ -71,6 +71,31 @@ const Home = () => {
             </div>
           </div>
         </div>
+        {/* Statistics */}
+        <div>
+          <h1 className="text-center font-kenia  text-4xl mt-28">Statistics</h1>
+          <div>
+            <div className="flex flex-col md:flex-row gap-5 my-16">
+              {/* one */}
+              <div className="flex flex-col justify-center items-center gap-3 border-2 md:w-1/2 rounded-xl py-4 shadow-lg font-semibold text-lg">
+                <p className="text-5xl font-extrabold text-blue-500">100</p>
+                <p>Total Users</p>
+              </div>
+              {/* two */}
+              <div className="flex flex-col justify-center items-center gap-3 border-2 md:w-1/2 rounded-xl py-4 shadow-lg font-bold text-lg">
+                <p className="text-3xl font-extrabold text-green-500">
+                  <span className="text-5xl">90/</span>1000
+                </p>
+                <progress
+                  className="progress progress-success w-56"
+                  value="90"
+                  max="1000"
+                ></progress>
+                <p>Get Services</p>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </HelmetProvider>
   );
