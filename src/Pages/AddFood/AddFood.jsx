@@ -1,6 +1,54 @@
 import { Helmet, HelmetProvider } from "react-helmet-async";
+import useAuthData from "../../Hooks/useAuthData/useAuthData";
+import axios from "axios";
+import Swal from "sweetalert2";
 
 const AddFood = () => {
+  const { user } = useAuthData();
+
+  const handleAddFood = (e) => {
+    e.preventDefault();
+
+    const form = e.target;
+    const foodName = form.foodName.value;
+    const foodImage = form.foodImage.value;
+    const foodQuantity = form.foodQuantity.value;
+    const pickupLocation = form.pickupLocation.value;
+    const expiredDateTime = form.expiredDateTime.value;
+    const additionalNotes = form.additionalNotes.value;
+
+    const food = {
+      foodName,
+      foodImage,
+      foodQuantity,
+      pickupLocation,
+      expiredDateTime,
+      additionalNotes,
+      donator: {
+        donatorImage: user?.photoURL,
+        donatorName: user?.displayName,
+        donatorEmail: user?.email,
+      },
+      foodStatus: "available",
+    };
+
+    console.log("food", food);
+    // add food to the dataBase ---
+    axios.post("http://localhost:5000/availableFood", food).then((res) => {
+      if (res.data.insertedId) {
+        Swal.fire({
+          title: "Success!",
+          text: "Food added successfully",
+          icon: "success",
+          confirmButtonText: "Ok",
+        });
+
+        // from clear
+        form.reset();
+      }
+    });
+  };
+
   return (
     <HelmetProvider>
       <Helmet>
@@ -13,7 +61,7 @@ const AddFood = () => {
         <p className=" lg:text-lg">Add food details that you want to share</p>
       </div>
       <div className="my-10">
-        <form>
+        <form onSubmit={handleAddFood}>
           <div className="grid gap-6 mb-6 md:grid-cols-2">
             <div>
               <label
@@ -69,10 +117,9 @@ const AddFood = () => {
               </label>
               <input
                 type="text"
-                name="pickUpLocation"
+                name="pickupLocation"
                 className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                 placeholder="pick up location"
-                pattern="[0-9]{3}-[0-9]{2}-[0-9]{3}"
                 required
               />
             </div>
@@ -84,8 +131,8 @@ const AddFood = () => {
                 Expired Date/Time
               </label>
               <input
-                type="date"
-                name="expired date/time"
+                type="text"
+                name="expiredDateTime"
                 className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                 placeholder="expired date/time"
                 required
@@ -100,7 +147,7 @@ const AddFood = () => {
               </label>
               <input
                 type="text"
-                name="additionlNotes"
+                name="additionalNotes"
                 className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                 placeholder="additional notes"
                 required
