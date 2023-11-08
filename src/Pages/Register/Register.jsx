@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import useAuthData from "../../Hooks/useAuthData/useAuthData";
 import Swal from "sweetalert2";
-import { Helmet } from "react-helmet";
+import { Helmet, HelmetProvider } from "react-helmet-async";
 
 const Register = () => {
   const { createUser, profileUpdate } = useAuthData();
@@ -60,7 +60,7 @@ const Register = () => {
   };
 
   return (
-    <>
+    <HelmetProvider>
       <Helmet>
         <title>Food For All | Register</title>
       </Helmet>
@@ -140,7 +140,7 @@ const Register = () => {
           </div>
         </div>
       </div>
-    </>
+    </HelmetProvider>
   );
 };
 

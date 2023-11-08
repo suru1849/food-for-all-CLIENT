@@ -10,6 +10,9 @@ export default {
       kenia: "'Kenia', sans-serif",
       "varela-round": " 'Varela Round', sans-serif",
     },
+    backgroundImage: {
+      addFoodBanner: "url('/src/assets/meetEatShare.jpg')",
+    },
   },
   plugins: [require("daisyui"), require("flowbite/plugin")],
 };
