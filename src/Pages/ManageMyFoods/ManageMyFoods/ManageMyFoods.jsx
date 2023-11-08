@@ -57,6 +57,7 @@ const ManageMyFoods = () => {
                 <th></th>
                 <th>Food</th>
                 <th>Quantity</th>
+                <th>Expired Date/Time</th>
                 <th>Pick Up Location</th>
                 <th></th>
               </tr>
@@ -102,9 +103,18 @@ const ManageMyFoods = () => {
                     </div>
                   </td>
                   <td>{food.foodQuantity}</td>
+                  <td>{`${food.expiredDateTime.split("T")[0]},${
+                    food.expiredDateTime.split("T")[1]
+                  }`}</td>
                   <td>{food.pickupLocation}</td>
+
                   <td>
-                    <button className="btn btn-error btn-xs">Edit</button>
+                    <Link
+                      to={`/edit-food/${food._id}`}
+                      className="btn btn-error btn-xs"
+                    >
+                      Edit
+                    </Link>
                   </td>
                   <td>
                     <Link

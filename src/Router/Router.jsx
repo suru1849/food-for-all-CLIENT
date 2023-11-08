@@ -11,6 +11,7 @@ import ManageMyFoods from "../Pages/ManageMyFoods/ManageMyFoods/ManageMyFoods";
 import Private from "../Private/Private";
 import MyFoodReq from "../Pages/MyFoodReq/MyFoodReq";
 import ManageFood from "../Pages/ManageFood/ManageFood";
+import EditFood from "../Pages/EditFood/EditFood";
 
 const Router = createBrowserRouter([
   {
@@ -73,6 +74,12 @@ const Router = createBrowserRouter([
         element: <ManageFood></ManageFood>,
         loader: ({ params }) =>
           fetch(`http://localhost:5000/requestedFood?foodId=${params.id}`),
+      },
+      {
+        path: "/edit-food/:id",
+        element: <EditFood></EditFood>,
+        loader: ({ params }) =>
+          fetch(`http://localhost:5000/availableFood?id=${params.id}`),
       },
     ],
   },

@@ -1,12 +1,17 @@
 import { Helmet, HelmetProvider } from "react-helmet-async";
+import { useLoaderData, useNavigate } from "react-router-dom";
 import useAuthData from "../../Hooks/useAuthData/useAuthData";
 import axios from "axios";
 import Swal from "sweetalert2";
 
-const AddFood = () => {
+const EditFood = () => {
+  const [food] = useLoaderData();
   const { user } = useAuthData();
+  const navigate = useNavigate();
 
-  const handleAddFood = (e) => {
+  const { _id } = food;
+
+  const handleUpdateFood = (e) => {
     e.preventDefault();
 
     const form = e.target;
@@ -17,7 +22,7 @@ const AddFood = () => {
     const expiredDateTime = form.expiredDateTime.value;
     const additionalNotes = form.additionalNotes.value;
 
-    const food = {
+    const upFood = {
       foodName,
       foodImage,
       foodQuantity,
@@ -32,35 +37,37 @@ const AddFood = () => {
       foodStatus: "available",
     };
 
-    // add food to the dataBase ---
-    axios.post("http://localhost:5000/availableFood", food).then((res) => {
-      if (res.data.insertedId) {
-        Swal.fire({
-          title: "Success!",
-          text: "Food added successfully",
-          icon: "success",
-          confirmButtonText: "Ok",
-        });
+    // update food to the dataBase ---
+    axios
+      .put(`http://localhost:5000/availableFood/${_id}`, upFood)
+      .then((res) => {
+        if (res.data.modifiedCount) {
+          Swal.fire({
+            title: "Success!",
+            text: "Food added successfully",
+            icon: "success",
+            confirmButtonText: "Ok",
+          });
 
-        // from clear
-        form.reset();
-      }
-    });
+          // from clear
+          form.reset();
+          navigate(-1);
+        }
+      });
   };
 
   return (
     <HelmetProvider>
       <Helmet>
-        <title>Food For All | Add Food</title>
+        <title>Food For All | Edit Food</title>
       </Helmet>
       <div className="text-center my-12">
         <h1 className="text-3xl lg:text-4xl font-bold text-gray-500">
-          Share Food Share Love
+          Update Your Uploaded Food Information
         </h1>
-        <p className=" lg:text-lg">Add food details that you want to share</p>
       </div>
       <div className="my-10">
-        <form onSubmit={handleAddFood}>
+        <form onSubmit={handleUpdateFood}>
           <div className="grid gap-6 mb-6 md:grid-cols-2">
             <div>
               <label
@@ -72,6 +79,7 @@ const AddFood = () => {
               <input
                 type="text"
                 name="foodName"
+                defaultValue={food.foodName}
                 className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                 placeholder="food name"
                 required
@@ -87,6 +95,7 @@ const AddFood = () => {
               <input
                 type="url"
                 name="foodImage"
+                defaultValue={food.foodImage}
                 className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                 placeholder="food image url"
                 required
@@ -102,6 +111,7 @@ const AddFood = () => {
               <input
                 type="number"
                 name="foodQuantity"
+                defaultValue={food.foodQuantity}
                 className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                 placeholder="food quantity"
                 required
@@ -117,6 +127,7 @@ const AddFood = () => {
               <input
                 type="text"
                 name="pickupLocation"
+                defaultValue={food.pickupLocation}
                 className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                 placeholder="pick up location"
                 required
@@ -132,6 +143,9 @@ const AddFood = () => {
               <input
                 type="text"
                 name="expiredDateTime"
+                defaultValue={`${food.expiredDateTime.split("T")[0]}, ${
+                  food.expiredDateTime.split("T")[1]
+                }`}
                 className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                 placeholder="expired date/time"
                 required
@@ -147,6 +161,7 @@ const AddFood = () => {
               <input
                 type="text"
                 name="additionalNotes"
+                defaultValue={food.additionalNotes}
                 className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                 placeholder="additional notes"
                 required
@@ -155,9 +170,9 @@ const AddFood = () => {
           </div>
           <div>
             <input
-              className="btn btn-primary w-full"
+              className="btn btn-secondary w-full"
               type="submit"
-              value="Add Food"
+              value="Update Food"
             />
           </div>
         </form>
@@ -166,4 +181,4 @@ const AddFood = () => {
   );
 };
 
-export default AddFood;
+export default EditFood;
