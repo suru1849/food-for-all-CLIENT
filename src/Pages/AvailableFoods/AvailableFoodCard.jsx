@@ -61,7 +61,10 @@ const AvailableFoodCard = ({ food }) => {
               <p className="font-bold">{donator.donatorName}</p>
             </div>
             <div className="flex justify-end">
-              <Link to={`/food/${_id}`} className="btn btn-success text-right ">
+              <Link
+                to={`/food-details/${_id}`}
+                className="btn btn-success text-right "
+              >
                 View Details
               </Link>
             </div>

@@ -1,6 +1,7 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
 import AvailableFoodCard from "./AvailableFoodCard";
+import { Helmet, HelmetProvider } from "react-helmet-async";
 
 const AvailableFoods = () => {
   const [foods, setFoods] = useState([]);
@@ -34,7 +35,10 @@ const AvailableFoods = () => {
   };
 
   return (
-    <div>
+    <HelmetProvider>
+      <Helmet>
+        <title>Food For All | Available Food</title>
+      </Helmet>
       <div className=" md:w-3/4 mx-auto mt-8">
         <form onSubmit={handleSearch}>
           <label
@@ -106,7 +110,7 @@ const AvailableFoods = () => {
           No Data Found, Please refresh
         </div>
       )}
-    </div>
+    </HelmetProvider>
   );
 };
 
