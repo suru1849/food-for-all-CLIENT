@@ -28,7 +28,11 @@ const FoodDetails = () => {
     const requestedDate = form.requestedDate.value;
 
     const requestedFood = {
-      useEmail: user?.email,
+      requester: {
+        email: user?.email,
+        photoURL: user?.photoURL,
+        displayName: user?.displayName,
+      },
       donationMoney,
       AdditionlNotes,
       requestedDate,
