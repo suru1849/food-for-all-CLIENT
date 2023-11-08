@@ -1,3 +1,4 @@
+import axios from "axios";
 import { useLoaderData, useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 
@@ -5,9 +6,7 @@ const ManageFood = () => {
   const navigate = useNavigate();
   const [reqfood] = useLoaderData();
 
-  console.log(reqfood);
-
-  const { _id, requester, requestedDate, food } = reqfood || {};
+  const { requester, requestedDate, food } = reqfood || {};
 
   const handleStatus = () => {
     Swal.fire({
@@ -20,15 +19,29 @@ const ManageFood = () => {
       confirmButtonText: "Yes, delivered it!",
     }).then((result) => {
       if (result.isConfirmed) {
-        fetch("http://localhost:5000/availableFood/update", {
-          method: "PUT",
-          headers: {
-            "content-type": "application/json",
-          },
-          body: JSON.stringify(food),
-        })
-          .then((res) => res.json())
-          .then((data) => console.log(data));
+        axios
+          .put(
+            "http://localhost:5000/requestedFood/update?status=delivered",
+            reqfood
+          )
+          .then(() => {
+            axios
+              .put(
+                `http://localhost:5000/availableFood/${food._id}?status=deliverd`,
+                food
+              )
+              .then(() => {
+                Swal.fire({
+                  title: "Success!",
+                  text: "Delivered successfully",
+                  icon: "success",
+                  confirmButtonText: "Ok",
+                });
+
+                // navigate
+                navigate(-1);
+              });
+          });
       }
     });
   };
@@ -68,13 +81,10 @@ const ManageFood = () => {
                 <th>
                   <button
                     onClick={handleStatus}
-                    className={`btn ${
-                      food?.foodStatus === "available"
-                        ? "btn-success"
-                        : "btn-error"
-                    } btn-xs`}
+                    className="btn 
+                        btn-success"
                   >
-                    {food?.foodStatus}
+                    Deliver
                   </button>
                 </th>
               </tr>
