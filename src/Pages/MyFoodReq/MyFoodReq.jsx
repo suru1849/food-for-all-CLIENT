@@ -12,7 +12,7 @@ const MyFoodReq = () => {
     fetch(`http://localhost:5000/requestedFood?email=${user?.email}`)
       .then((res) => res.json())
       .then((data) => setReqFoods(data));
-  }, []);
+  }, [user?.email]);
 
   const handleCancel = (id) => {
     axios.delete(`http://localhost:5000/requestedFood/${id}`).then((res) => {

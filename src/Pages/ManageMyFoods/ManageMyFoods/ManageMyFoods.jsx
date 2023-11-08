@@ -3,6 +3,7 @@ import useAuthData from "../../../Hooks/useAuthData/useAuthData";
 import Swal from "sweetalert2";
 import axios from "axios";
 import { Link } from "react-router-dom";
+import { Helmet, HelmetProvider } from "react-helmet-async";
 
 const ManageMyFoods = () => {
   const { user } = useAuthData();
@@ -47,7 +48,10 @@ const ManageMyFoods = () => {
   };
 
   return (
-    <>
+    <HelmetProvider>
+      <Helmet>
+        <title>Food For All | Manage My Food</title>
+      </Helmet>
       {foods.length > 0 ? (
         <div className="overflow-x-auto my-10">
           <table className="table">
@@ -134,7 +138,7 @@ const ManageMyFoods = () => {
           No Data Found, Please refresh
         </div>
       )}
-    </>
+    </HelmetProvider>
   );
 };
 
