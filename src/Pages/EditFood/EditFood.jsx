@@ -39,7 +39,9 @@ const EditFood = () => {
 
     // update food to the dataBase ---
     axios
-      .put(`http://localhost:5000/availableFood/${_id}`, upFood)
+      .put(`http://localhost:5000/availableFood/${_id}`, upFood, {
+        withCredentials: true,
+      })
       .then((res) => {
         if (res.data.modifiedCount) {
           Swal.fire({

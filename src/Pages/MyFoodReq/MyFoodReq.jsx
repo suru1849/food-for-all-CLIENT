@@ -9,7 +9,9 @@ const MyFoodReq = () => {
   const [reqFoods, setReqFoods] = useState([]);
 
   useEffect(() => {
-    fetch(`http://localhost:5000/requestedFood?email=${user?.email}`)
+    fetch(`http://localhost:5000/requestedFood?email=${user?.email}`, {
+      credentials: true,
+    })
       .then((res) => res.json())
       .then((data) => setReqFoods(data));
   }, [user?.email]);

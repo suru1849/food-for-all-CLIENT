@@ -66,8 +66,6 @@ const Router = createBrowserRouter([
             <FoodDetails></FoodDetails>
           </Private>
         ),
-        loader: ({ params }) =>
-          fetch(`http://localhost:5000/availableFood?id=${params.id}`),
       },
       {
         path: "/manage-food/:id",
@@ -79,7 +77,9 @@ const Router = createBrowserRouter([
         path: "/edit-food/:id",
         element: <EditFood></EditFood>,
         loader: ({ params }) =>
-          fetch(`http://localhost:5000/availableFood?id=${params.id}`),
+          fetch(`http://localhost:5000/availableFood/${params.id}`, {
+            credentials: "include",
+          }),
       },
     ],
   },

@@ -28,7 +28,9 @@ const ManageMyFoods = () => {
     }).then((result) => {
       if (result.isConfirmed) {
         axios
-          .delete(`http://localhost:5000/availableFood/${id}`)
+          .delete(`http://localhost:5000/availableFood/${id}`, {
+            withCredentials: true,
+          })
           .then((res) => {
             if (res.data.deletedCount) {
               Swal.fire({

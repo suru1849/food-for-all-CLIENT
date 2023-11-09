@@ -1,23 +1,25 @@
 import { Helmet, HelmetProvider } from "react-helmet-async";
-import { useLoaderData, useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import useAuthData from "../../Hooks/useAuthData/useAuthData";
 import axios from "axios";
 import Swal from "sweetalert2";
+import { useEffect, useState } from "react";
 
 const FoodDetails = () => {
-  const [food] = useLoaderData();
+  const { id } = useParams();
+  const [food, setFood] = useState({});
   const { user } = useAuthData();
   const navigate = useNavigate();
 
-  const {
-    _id,
-    donator,
-    foodName,
-    foodImage,
-    foodQuantity,
-    pickupLocation,
-    expiredDateTime,
-  } = food || {};
+  useEffect(() => {
+    axios
+      .get(`http://localhost:5000/availableFood/${id}`, {
+        withCredentials: true,
+      })
+      .then((res) => {
+        setFood(res.data[0]);
+      });
+  }, [id]);
 
   const handleRequest = (e) => {
     e.preventDefault();
@@ -74,7 +76,7 @@ const FoodDetails = () => {
   return (
     <HelmetProvider>
       <Helmet>
-        <title>{`Food For All | Food Details - ${_id}`}</title>
+        <title>{`Food For All | Food Details - ${food?._id}`}</title>
       </Helmet>
       <div>
         {/* donator info */}
@@ -83,16 +85,16 @@ const FoodDetails = () => {
           <div className="flex justify-around text-center">
             <div className="avatar">
               <div className="rounded-full w-16">
-                <img src={donator.donatorImage} alt="Image" />
+                <img src={food?.donator?.donatorImage} alt="Image" />
               </div>
             </div>
             <div>
               <p className="font-bold">Name</p>
-              <p className="text-sm opacity-50">{donator.donatorName}</p>
+              <p className="text-sm opacity-50">{food?.donator?.donatorName}</p>
             </div>
             <div>
               <p className="font-bold">Pick Up Location</p>
-              <p className="text-sm opacity-50">{pickupLocation}</p>
+              <p className="text-sm opacity-50">{food?.pickupLocation}</p>
             </div>
           </div>
         </div>
@@ -102,21 +104,26 @@ const FoodDetails = () => {
           <div className="flex flex-col md:flex-row items-center justify-center md:justify-around  text-center space-y-5">
             <div className="avatar">
               <div className="mask mask-squircle w-40 h-40">
-                <img className="object-cover" src={foodImage} alt="Image" />
+                <img
+                  className="object-cover"
+                  src={food?.foodImage}
+                  alt="Image"
+                />
               </div>
             </div>
             <div>
               <p className="font-bold">Name</p>
-              <p className="text-sm opacity-50">{foodName}</p>
+              <p className="text-sm opacity-50">{food?.foodName}</p>
             </div>
             <div>
               <p className="font-bold">Food Quantity</p>
-              <p className="text-sm opacity-50">{foodQuantity}</p>
+              <p className="text-sm opacity-50">{food?.foodQuantity}</p>
             </div>
             <div>
               <p className="font-bold">Expired Date/Time</p>
               <p className="text-sm opacity-50">
-                {expiredDateTime.split("T")[0]}, {expiredDateTime.split("T")[1]}
+                {food?.expiredDateTime?.split("T")[0]},{" "}
+                {food?.expiredDateTime?.split("T")[1]}
               </p>
             </div>
             <div>
@@ -144,7 +151,7 @@ const FoodDetails = () => {
                       <input
                         type="text"
                         name="foodName"
-                        defaultValue={foodName}
+                        defaultValue={food?.foodName}
                         className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                         placeholder="food name"
                         readOnly
@@ -161,7 +168,7 @@ const FoodDetails = () => {
                       <input
                         type="url"
                         name="foodImage"
-                        defaultValue={foodImage}
+                        defaultValue={food?.foodImage}
                         className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                         placeholder="food image url"
                         readOnly
@@ -178,7 +185,7 @@ const FoodDetails = () => {
                       <input
                         type="text"
                         name="donatorName"
-                        defaultValue={donator.donatorName}
+                        defaultValue={food?.donator?.donatorName}
                         className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                         placeholder="food quantity"
                         readOnly
@@ -195,7 +202,7 @@ const FoodDetails = () => {
                       <input
                         type="text"
                         name="donatorEmail"
-                        defaultValue={donator.donatorEmail}
+                        defaultValue={food?.donator?.donatorEmail}
                         className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                         placeholder="food quantity"
                         readOnly
@@ -229,7 +236,7 @@ const FoodDetails = () => {
                       <input
                         type="text"
                         name="pickupLocation"
-                        defaultValue={pickupLocation}
+                        defaultValue={food?.pickupLocation}
                         className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                         placeholder="pick up location"
                         readOnly
@@ -246,7 +253,7 @@ const FoodDetails = () => {
                       <input
                         type="text"
                         name="expiredDateTime"
-                        defaultValue={expiredDateTime.split("T")[0]}
+                        defaultValue={food?.expiredDateTime?.split("T")[0]}
                         className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                         placeholder="expired date/time"
                         readOnly
