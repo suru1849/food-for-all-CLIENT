@@ -29,3 +29,38 @@ export const getAllFoods = async (sort, searchItem) => {
 
   return data;
 };
+
+// Get A single available food
+export const getAFood = async (id) => {
+  const { data } = await axiosSecure(`/foods/${id}`);
+
+  return data;
+};
+
+// Get added food by a donator
+export const getAddedFood = async (email) => {
+  const { data } = await axiosSecure(`/foods/donator/${email}`);
+
+  return data;
+};
+
+// Delete a single food
+export const deleteFood = async (id) => {
+  const { data } = await axiosSecure.delete(`/foods/delete/${id}`);
+
+  return data;
+};
+
+// update a food
+export const updateFood = async (id, food) => {
+  const { data } = await axiosSecure.put(`/food/update/${id}`, food);
+
+  return data;
+};
+
+// update a foodSTatus
+export const updateFoodStatus = async (id, status) => {
+  const { data } = await axiosSecure.put(`/food/update/status/${id}`, status);
+
+  return data;
+};

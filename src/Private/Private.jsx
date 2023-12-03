@@ -1,6 +1,7 @@
 import { Navigate, useLocation } from "react-router-dom";
 import useAuthData from "../Hooks/useAuthData/useAuthData";
 import PropTypes from "prop-types";
+import Loader from "../Components/Loader/Loader";
 
 const Private = ({ children }) => {
   const location = useLocation();
@@ -10,11 +11,7 @@ const Private = ({ children }) => {
     return children;
   }
   if (loading) {
-    return (
-      <div className="min-h-screen flex justify-center items-center">
-        <span className="loading loading-bars loading-lg"></span>
-      </div>
-    );
+    return <Loader />;
   }
 
   return <Navigate state={location.pathname} to="/login"></Navigate>;

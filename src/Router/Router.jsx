@@ -70,18 +70,10 @@ const Router = createBrowserRouter([
       {
         path: "/manage-food/:id",
         element: <ManageFood></ManageFood>,
-        loader: ({ params }) =>
-          fetch(
-            `https://food-for-all-server.vercel.app/requestedFood?foodId=${params.id}`
-          ),
       },
       {
         path: "/edit-food/:id",
         element: <EditFood></EditFood>,
-        loader: ({ params }) =>
-          fetch(
-            `https://food-for-all-server.vercel.app/availableFood/${params.id}`
-          ),
       },
     ],
   },

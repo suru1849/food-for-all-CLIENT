@@ -1,20 +1,18 @@
 import { useEffect, useState } from "react";
 import useAuthData from "../../../Hooks/useAuthData/useAuthData";
 import Swal from "sweetalert2";
-import axios from "axios";
 import { Link } from "react-router-dom";
 import { Helmet, HelmetProvider } from "react-helmet-async";
+import { deleteFood, getAddedFood } from "../../../api/food";
 
 const ManageMyFoods = () => {
   const { user } = useAuthData();
   const [foods, setFoods] = useState([]);
 
   useEffect(() => {
-    fetch(
-      `https://food-for-all-server.vercel.app/availableFood?email=${user?.email}`
-    )
-      .then((res) => res.json())
-      .then((data) => setFoods(data));
+    getAddedFood(user?.email).then((data) => {
+      setFoods(data);
+    });
   }, [user?.email]);
 
   // Remove
@@ -27,24 +25,14 @@ const ManageMyFoods = () => {
       confirmButtonColor: "#3085d6",
       cancelButtonColor: "#d33",
       confirmButtonText: "Yes, delete it!",
-    }).then((result) => {
+    }).then(async (result) => {
       if (result.isConfirmed) {
-        axios
-          .delete(`https://food-for-all-server.vercel.app/availableFood/${id}`)
-          .then((res) => {
-            if (res.data.deletedCount) {
-              Swal.fire({
-                title: "Deleted!",
-                text: "Your file has been deleted.",
-                icon: "success",
-                confirmButtonText: "Ok",
-              });
+        // delete item
+        await deleteFood(id);
 
-              // updateFood
-              const remaining = foods.filter((food) => food._id !== id);
-              setFoods(remaining);
-            }
-          });
+        // updateFood
+        const remaining = foods.filter((food) => food._id !== id);
+        setFoods(remaining);
       }
     });
   };
@@ -74,6 +62,7 @@ const ManageMyFoods = () => {
                 <tr key={food._id}>
                   <td>
                     <button
+                      disabled={food?.foodStatus === "delivered"}
                       onClick={() => handleRemove(food._id)}
                       className="btn btn-circle btn-outline btn-sm"
                     >
@@ -101,22 +90,21 @@ const ManageMyFoods = () => {
                         </div>
                       </div>
                       <div>
-                        <div className="font-bold">{food.foodName}</div>
+                        <div className="font-bold">{food?.foodName}</div>
                         <div className="text-sm opacity-50 ">
-                          {food.additionalNotes}
+                          {food?.additionalNotes}
                         </div>
                       </div>
                     </div>
                   </td>
-                  <td>{food.foodQuantity}</td>
-                  <td>{`${food.expiredDateTime.split("T")[0]},${
-                    food.expiredDateTime.split("T")[1]
-                  }`}</td>
-                  <td>{food.pickupLocation}</td>
+                  <td>{food?.foodQuantity}</td>
+                  <td>{food?.expiredDateTime}</td>
+                  <td>{food?.pickupLocation}</td>
 
                   <td>
                     <Link
-                      to={`/edit-food/${food._id}`}
+                      disabled={food?.foodStatus === "delivered"}
+                      to={`/edit-food/${food?._id}`}
                       className="btn btn-error btn-xs"
                     >
                       Edit
@@ -124,7 +112,7 @@ const ManageMyFoods = () => {
                   </td>
                   <td>
                     <Link
-                      to={`/manage-food/${food._id}`}
+                      to={`/manage-food/${food?._id}`}
                       className="btn btn-success btn-xs"
                     >
                       Manage

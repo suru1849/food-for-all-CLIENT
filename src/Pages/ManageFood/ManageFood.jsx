@@ -1,15 +1,28 @@
-import axios from "axios";
+import { useQuery } from "@tanstack/react-query";
 import { Helmet, HelmetProvider } from "react-helmet-async";
-import { useLoaderData, useNavigate } from "react-router-dom";
+import { useParams } from "react-router-dom";
+import useAuthData from "../../Hooks/useAuthData/useAuthData";
+import { getReqFoodByFoodId, updateReqFoodStatus } from "../../api/requestFood";
+import Loader from "../../Components/Loader/Loader";
 import Swal from "sweetalert2";
+import { toast } from "react-hot-toast";
+import { updateFoodStatus } from "../../api/food";
 
 const ManageFood = () => {
-  const navigate = useNavigate();
-  const [reqfood] = useLoaderData();
+  const { user } = useAuthData();
+  const { id } = useParams();
 
-  const { requester, requestedDate, food } = reqfood || {};
+  const {
+    data: food = {},
+    isLoading,
+    refetch,
+  } = useQuery({
+    enabled: !!user?.email,
+    queryFn: async () => await getReqFoodByFoodId(id),
+    queryKey: ["food"],
+  });
 
-  const handleStatus = () => {
+  const handleDelivered = async () => {
     Swal.fire({
       title: "Are you sure?",
       text: "You won't be able to revert this!",
@@ -18,94 +31,94 @@ const ManageFood = () => {
       confirmButtonColor: "#3085d6",
       cancelButtonColor: "#d33",
       confirmButtonText: "Yes, delivered it!",
-    }).then((result) => {
+    }).then(async (result) => {
       if (result.isConfirmed) {
-        axios
-          .put(
-            "https://food-for-all-server.vercel.app/requestedFood/update?status=delivered",
-            reqfood
-          )
-          .then(() => {
-            axios
-              .put(
-                `https://food-for-all-server.vercel.app/availableFood/${food._id}?status=deliverd`,
-                food
-              )
-              .then(() => {
-                Swal.fire({
-                  title: "Success!",
-                  text: "Delivered successfully",
-                  icon: "success",
-                  confirmButtonText: "Ok",
-                });
+        try {
+          // update Status of request food
+          await updateReqFoodStatus(food?._id, { status: "delivered" });
 
-                // navigate
-                navigate(-1);
-              });
-          });
+          // update food status
+          await updateFoodStatus(id, { status: "delivered" });
+
+          toast.success("Delivered Successfully");
+        } catch (err) {
+          console.log(err);
+          toast.error(err.message);
+        } finally {
+          refetch();
+        }
       }
     });
   };
+
+  if (isLoading) return <Loader />;
 
   return (
     <HelmetProvider>
       <Helmet>
         <title>Food For All | Mange A Single Food</title>
       </Helmet>
-      <div>
-        {reqfood ? (
-          <div className="overflow-x-auto">
-            <table className="table mt-20">
-              {/* head */}
+      <div className="min-h-[calc(100vh-100px)] flex justify-center items-center">
+        {food ? (
+          <div className="overflow-x-auto my-10  w-full">
+            <table className="table table-xs">
               <thead>
                 <tr>
-                  <th></th>
-                  <th>Name</th>
-                  <th>Email</th>
-                  <th>Request Time</th>
+                  <th>Requester Name</th>
+                  <th>Requester Image</th>
+                  <th>Requester Email</th>
                   <th>Request Date</th>
                   <th>Status</th>
+                  <th>Action</th>
                 </tr>
               </thead>
               <tbody>
-                {/* row 1 */}
-                <tr>
-                  <td>
-                    <div className="flex items-center space-x-3">
-                      <div className="avatar">
-                        <div className="mask mask-squircle w-32 h-32">
-                          <img src={requester?.photoURL} />
-                        </div>
-                      </div>
+                {/* row */}
+                <tr className="space-x-3">
+                  <td className="text-lg font-semibold">
+                    {food?.requester?.name}
+                  </td>
+                  <td className="text-lg font-semibold">
+                    <div className=" w-24 h-24">
+                      <img
+                        src={food?.requester?.image}
+                        className="object-center w-full h-full rounded-xl"
+                      />
                     </div>
                   </td>
-                  <td>{requester?.displayName}</td>
-                  <td>{requester?.email}</td>
-                  <td>{requestedDate?.split(", ")[1]}</td>
-                  <td>{requestedDate?.split(", ")[0]}</td>
-                  <th>
+                  <td className="text-lg font-semibold">
+                    {food?.requester?.email}
+                  </td>
+                  <td className="text-lg font-semibold">
+                    {food?.requestedDate}
+                  </td>
+                  <td
+                    className={`text-lg font-semibold ${
+                      food?.status !== "delivered"
+                        ? "text-warning"
+                        : "text-success"
+                    }`}
+                  >
+                    {food?.status}
+                  </td>
+                  <td>
                     <button
-                      onClick={handleStatus}
-                      className="btn 
-                        btn-success"
+                      disabled={food?.foodStatus === "delivered"}
+                      onClick={handleDelivered}
+                      className="btn btn-success"
                     >
-                      Deliver
+                      Delivere
                     </button>
-                  </th>
+                  </td>
                 </tr>
               </tbody>
             </table>
           </div>
         ) : (
-          <div className="text-xl md:text-2xl min-h-[40vh] text-red-600 font-semibold  flex justify-center items-center">
-            Not Requested Yet
+          <div className="text-xl md:text-2xl min-h-[80vh] text-red-600 font-semibold  flex justify-center items-center">
+            No Data Found, Please refresh
           </div>
         )}
-        <div className="flex justify-center mt-32 my-8">
-          <button onClick={() => navigate(-1)} className="btn btn-warning">
-            Back
-          </button>
-        </div>
       </div>
     </HelmetProvider>
   );

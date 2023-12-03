@@ -11,8 +11,6 @@ export const saveUser = async (email, user) => {
 
   const { data } = await axiosSecure.put(`/users/${email}`, currentUser);
 
-  console.log(data);
-
   return data;
 };
 

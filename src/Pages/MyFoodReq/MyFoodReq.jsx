@@ -1,41 +1,42 @@
-import { useEffect, useState } from "react";
 import useAuthData from "../../Hooks/useAuthData/useAuthData";
-import axios from "axios";
-import Swal from "sweetalert2";
 import { Helmet, HelmetProvider } from "react-helmet-async";
+import { useQuery } from "@tanstack/react-query";
+import { deleteReqFood, getReqFoods } from "../../api/requestFood";
+import Loader from "../../Components/Loader/Loader";
+import { toast } from "react-hot-toast";
+import { updateFoodStatus } from "../../api/food";
 
 const MyFoodReq = () => {
   const { user } = useAuthData();
-  const [reqFoods, setReqFoods] = useState([]);
 
-  useEffect(() => {
-    fetch(
-      `https://food-for-all-server.vercel.app/requestedFood?email=${user?.email}`
-    )
-      .then((res) => res.json())
-      .then((data) => setReqFoods(data));
-  }, [user?.email]);
+  const {
+    data: reqFoods = [],
+    isLoading,
+    refetch,
+  } = useQuery({
+    enabled: !!user?.email,
+    queryFn: async () => await getReqFoods(user?.email),
+    queryKey: ["reqFoods"],
+  });
 
-  console.log("Requested Food", reqFoods);
+  const handleCancel = async (id, foodId) => {
+    try {
+      // delete req
+      await deleteReqFood(id);
 
-  const handleCancel = (id) => {
-    axios
-      .delete(`https://food-for-all-server.vercel.app/requestedFood/${id}`)
-      .then((res) => {
-        if (res.data.deletedCount) {
-          Swal.fire({
-            title: "Success!",
-            text: "Canceled successfully",
-            icon: "success",
-            confirmButtonText: "Ok",
-          });
+      //Update Food Status
+      await updateFoodStatus(foodId, { status: "available" });
 
-          // update ReqFoods
-          const remaining = reqFoods.filter((reqFood) => reqFood._id !== id);
-          setReqFoods(remaining);
-        }
-      });
+      toast.success("Canceled Succesfully");
+    } catch (err) {
+      console.log(err);
+      toast.error(err.message);
+    } finally {
+      refetch();
+    }
   };
+
+  if (isLoading) return <Loader />;
 
   return (
     <HelmetProvider>
@@ -49,43 +50,54 @@ const MyFoodReq = () => {
             <table className="table table-xs">
               <thead>
                 <tr>
-                  <th></th>
                   <th>Donar Name</th>
                   <th>Pickup Location</th>
                   <th>Expire Date</th>
                   <th>Request Date</th>
                   <th>My Donation Amount</th>
                   <th>Status</th>
-                  <th></th>
+                  <th>Action</th>
                 </tr>
               </thead>
               <tbody>
                 {/* row */}
-                {reqFoods.map((reqFood, index) => (
-                  <tr key={index}>
-                    <th>{index + 1}</th>
-                    <td>{reqFood.donator.donatorName}</td>
-                    <td>{reqFood.food.pickupLocation}</td>
-                    <td>{`${reqFood.food.expiredDateTime.split("T")[0]},${
-                      reqFood.food.expiredDateTime.split("T")[1]
-                    }`}</td>
-                    <td>{`${reqFood.requestedDate.split(",")[0]},${
-                      reqFood.requestedDate.split(",")[1]
-                    }`}</td>
-                    <td>{reqFood.donationMoney}</td>
-                    <td>{reqFood.food.foodStatus}</td>
-                    {reqFood.food.foodStatus === "available" ? (
-                      <td>
-                        <button
-                          onClick={() => handleCancel(reqFood._id)}
-                          className="btn btn-error btn-sm text-white"
-                        >
-                          Cancel
-                        </button>
-                      </td>
-                    ) : (
-                      <td></td>
-                    )}
+                {reqFoods.map((data) => (
+                  <tr key={data?._id}>
+                    <td className="text-md font-semibold">
+                      {data?.donar?.name}
+                    </td>
+                    <td className="text-md font-semibold">
+                      {data?.food?.pickupLocation}
+                    </td>
+                    <td className="text-md font-semibold">
+                      {data?.requestedDate}
+                    </td>
+                    <td className="text-md font-semibold">
+                      {data?.food?.expiredDateTime}
+                    </td>
+                    <td className="text-md font-semibold">
+                      $ {data?.donationMoney}
+                    </td>
+                    <td
+                      className={`text-md font-semibold ${
+                        data?.status === "pending"
+                          ? "text-warning"
+                          : "text-success"
+                      } `}
+                    >
+                      {data?.status}
+                    </td>
+                    <td>
+                      <button
+                        disabled={data?.status === "delivered"}
+                        onClick={() =>
+                          handleCancel(data?._id, data?.food?.foodId)
+                        }
+                        className="btn btn-error btn-xs"
+                      >
+                        Cancel
+                      </button>
+                    </td>
                   </tr>
                 ))}
               </tbody>
