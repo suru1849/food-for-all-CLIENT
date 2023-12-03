@@ -11,7 +11,8 @@ import {
   updateProfile,
 } from "firebase/auth";
 import app from "../../Config/firebase.config";
-import axios from "axios";
+import { clearToken } from "../../api/auth";
+import { toast } from "react-hot-toast";
 
 export const AuthContext = createContext(null);
 const auth = getAuth(app);
@@ -39,7 +40,10 @@ const AuthProvider = ({ children }) => {
   };
 
   // signOut
-  const logOut = () => {
+  const logOut = async () => {
+    await clearToken();
+    setLoading(false);
+    toast.success("Logout Succesfull");
     return signOut(auth);
   };
 
@@ -54,30 +58,10 @@ const AuthProvider = ({ children }) => {
   // observer
   useEffect(() => {
     const unSubscribe = onAuthStateChanged(auth, (currentUser) => {
-      const logged = currentUser?.email || user?.email;
-      const loggedUser = { email: logged };
-
       // observer
       console.log("Observer", currentUser);
-      setLoading(false);
       setUser(currentUser);
-
-      //  jwt
-      if (currentUser?.email) {
-        axios
-          .post("https://food-for-all-server.vercel.app/jwt", loggedUser, {
-            withCredentials: true,
-          })
-          .then((res) => {
-            console.log(res.data);
-          });
-      } else {
-        axios
-          .post("https://food-for-all-server.vercel.app/logout", loggedUser, {
-            withCredentials: true,
-          })
-          .then((res) => console.log(res.data));
-      }
+      setLoading(false);
     });
 
     return () => {

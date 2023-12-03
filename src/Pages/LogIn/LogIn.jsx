@@ -1,15 +1,21 @@
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import useAuthData from "../../Hooks/useAuthData/useAuthData";
-import Swal from "sweetalert2";
 import { Helmet, HelmetProvider } from "react-helmet-async";
 import { FcGoogle } from "react-icons/fc";
+import { toast } from "react-hot-toast";
+import { getToken, saveUser } from "../../api/auth";
+import LoaderBtn from "../../Components/LoaderBtn/LoaderBtn";
+import { ImSpinner9 } from "react-icons/im";
+import { useState } from "react";
 
 const LogIn = () => {
+  const [loading, setLoading] = useState(false);
   const { signIn, googleSignIn } = useAuthData();
   const navigate = useNavigate();
   const location = useLocation();
 
-  const handleLogIN = (e) => {
+  const handleLogIN = async (e) => {
+    setLoading(true);
     e.preventDefault();
 
     const form = e.target;
@@ -17,52 +23,41 @@ const LogIn = () => {
     const password = form.password.value;
 
     // signIN
-    signIn(email, password)
-      .then(() => {
-        Swal.fire({
-          title: "Success!",
-          text: "Sign In Successfull",
-          icon: "success",
-          confirmButtonText: "Ok",
-        });
+    try {
+      // log in email and pass
+      await signIn(email, password);
 
-        // clear form
-        form.reset();
+      // get token
+      await getToken(email);
 
-        // navigate
-        navigate(location?.state ? location.state : "/");
-      })
-      .catch(() => {
-        Swal.fire({
-          title: "Error!",
-          text: "Enter valid Email/Password",
-          icon: "error",
-          confirmButtonText: "opps",
-        });
-      });
+      navigate(location?.state ? location.state : "/");
+    } catch (err) {
+      console.log(err);
+      toast.error(err.message);
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const handleGoogle = () => {
-    googleSignIn()
-      .then(() => {
-        Swal.fire({
-          title: "Success!",
-          text: "Sign In with GOOGLE Successfull",
-          icon: "success",
-          confirmButtonText: "Ok",
-        });
+  const handleGoogle = async () => {
+    try {
+      // sing in with google
+      const { user } = await googleSignIn();
 
-        // navigate
-        navigate(location?.state ? location.state : "/");
-      })
-      .catch(() => {
-        Swal.fire({
-          title: "Error!",
-          text: "Sign In with valid GOOGLE account",
-          icon: "error",
-          confirmButtonText: "opps",
-        });
-      });
+      // get token
+      await getToken(user?.email);
+
+      // Save user
+      await saveUser(user?.email, user);
+
+      // navigaet
+      navigate(location?.state ? location.state : "/");
+
+      toast.success("Login Successful");
+    } catch (err) {
+      console.log(err);
+      toast.error(err.message);
+    }
   };
 
   return (
@@ -106,11 +101,13 @@ const LogIn = () => {
                 />
               </div>
               <div className="form-control mt-6">
-                <input
-                  className="btn btn-primary"
-                  type="submit"
-                  value="Sign In"
-                />
+                <button type="submit" className="btn btn-primary">
+                  <LoaderBtn
+                    icon={ImSpinner9}
+                    label={"Login"}
+                    loading={loading}
+                  />
+                </button>
               </div>
             </form>
             <div className="card-body -mt-10">

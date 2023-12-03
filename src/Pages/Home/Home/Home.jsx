@@ -6,14 +6,16 @@ import img1 from "../../../assets/image1.png";
 import img2 from "../../../assets/image2.png";
 import img3 from "../../../assets/image5.png";
 import Banner from "../Banner/Banner";
+import { getSortedFood } from "../../../api/food";
 
 const Home = () => {
   const [foods, setFoods] = useState([]);
 
   useEffect(() => {
-    fetch("https://food-for-all-server.vercel.app/availableFood?quantity=1")
-      .then((res) => res.json())
-      .then((data) => setFoods(data));
+    getSortedFood().then((data) => {
+      console.log(data);
+      setFoods(data);
+    });
   }, []);
 
   return (

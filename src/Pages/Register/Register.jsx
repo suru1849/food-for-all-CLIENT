@@ -1,19 +1,28 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import useAuthData from "../../Hooks/useAuthData/useAuthData";
 import Swal from "sweetalert2";
 import { Helmet, HelmetProvider } from "react-helmet-async";
+import { imageUpload } from "../../api/utils";
+import { toast } from "react-hot-toast";
+import { getToken, saveUser } from "../../api/auth";
+import { ImSpinner9 } from "react-icons/im";
+import LoaderBtn from "../../Components/LoaderBtn/LoaderBtn";
+import { useState } from "react";
 
 const Register = () => {
+  const [loading, setLoading] = useState(false);
   const { createUser, profileUpdate } = useAuthData();
+  const navigate = useNavigate();
 
-  const handleSignUp = (e) => {
+  const handleSignUp = async (e) => {
+    setLoading(true);
     e.preventDefault();
 
     const form = e.target;
     const name = form.name.value;
     const email = form.email.value;
     const password = form.password.value;
-    const photoUrl = form.photoUrl.value;
+    const photoUrl = form.image.files[0];
 
     if (password.length < 6) {
       return Swal.fire({
@@ -24,39 +33,31 @@ const Register = () => {
       });
     }
 
-    // createUser
-    createUser(email, password)
-      .then(() =>
-        // displayName and photoUrl setup
-        profileUpdate(name, photoUrl)
-          .then(() => {
-            Swal.fire({
-              title: "Success!",
-              text: "Sign Up Successfull",
-              icon: "success",
-              confirmButtonText: "Ok",
-            });
+    try {
+      // upload profile pic in imgBB
+      const imageUrl = await imageUpload(photoUrl);
 
-            // reset form
-            form.reset();
-          })
-          .catch(() => {
-            Swal.fire({
-              title: "Error!",
-              text: "Submit valid Data",
-              icon: "error",
-              confirmButtonText: "opps",
-            });
-          })
-      )
-      .catch(() => {
-        Swal.fire({
-          title: "Error!",
-          text: "Email already exits",
-          icon: "error",
-          confirmButtonText: "opps",
-        });
-      });
+      // create user
+      const { user } = await createUser(email, password);
+
+      // profile update
+      await profileUpdate(name, imageUrl?.data?.display_url);
+
+      // save user in data base
+      await saveUser(email, user);
+
+      // get Token
+      await getToken(email);
+
+      toast.success("Registration Successful");
+      navigate(-1);
+    } catch (err) {
+      console.log(err);
+      toast.error(err.message);
+    } finally {
+      form.reset();
+      setLoading(false);
+    }
   };
 
   return (
@@ -99,15 +100,16 @@ const Register = () => {
                   required
                 />
               </div>
-              <div className="form-control">
-                <label className="label">
-                  <span className="label-text">Photo Url</span>
+              <div>
+                <label htmlFor="image" className="block mb-2 text-sm">
+                  Select Image:
                 </label>
                 <input
-                  type="text"
-                  name="photoUrl"
-                  placeholder="photo url"
-                  className="input input-bordered"
+                  required
+                  type="file"
+                  id="image"
+                  name="image"
+                  accept="image/*"
                 />
               </div>
               <div className="form-control">
@@ -123,11 +125,13 @@ const Register = () => {
                 />
               </div>
               <div className="form-control mt-6">
-                <input
-                  className="btn btn-primary"
-                  type="submit"
-                  value="Sign Up"
-                />
+                <button type="submit" className="btn btn-primary">
+                  <LoaderBtn
+                    icon={ImSpinner9}
+                    label={"Register"}
+                    loading={loading}
+                  />
+                </button>
               </div>
             </form>
             <div className="text-center pb-5">

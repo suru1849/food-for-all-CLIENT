@@ -20,7 +20,7 @@ const AddFood = () => {
     const food = {
       foodName,
       foodImage,
-      foodQuantity,
+      foodQuantity: parseInt(foodQuantity),
       pickupLocation,
       expiredDateTime,
       additionalNotes,

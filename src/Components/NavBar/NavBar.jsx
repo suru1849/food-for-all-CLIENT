@@ -2,21 +2,9 @@ import { Avatar, Dropdown, Navbar } from "flowbite-react";
 import { NavLink } from "react-router-dom";
 import "./NavBar.css";
 import useAuthData from "../../Hooks/useAuthData/useAuthData";
-import Swal from "sweetalert2";
 
 const NavBar = () => {
   const { user, logOut } = useAuthData();
-
-  const handleSignOut = () => {
-    logOut().then(() => {
-      Swal.fire({
-        title: "Success!",
-        text: "Sign Out Successfull",
-        icon: "success",
-        confirmButtonText: "Ok",
-      });
-    });
-  };
 
   return (
     <>
@@ -41,7 +29,7 @@ const NavBar = () => {
                   {user?.email}
                 </span>
               </Dropdown.Header>
-              <Dropdown.Item onClick={handleSignOut}>Sign out</Dropdown.Item>
+              <Dropdown.Item onClick={logOut}>Sign out</Dropdown.Item>
             </Dropdown>
           )}
           <Navbar.Toggle />

@@ -4,12 +4,14 @@ import "./index.css";
 import { RouterProvider } from "react-router-dom";
 import Router from "./Router/Router";
 import AuthProvider from "./Provider/AuthProvider/AuthProvider";
+import { Toaster } from "react-hot-toast";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <div className="max-w-screen-xl mx-auto font-varela-round">
     <AuthProvider>
       <React.StrictMode>
         <RouterProvider router={Router}></RouterProvider>
+        <Toaster />
       </React.StrictMode>
     </AuthProvider>
   </div>
