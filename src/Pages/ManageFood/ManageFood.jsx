@@ -103,7 +103,7 @@ const ManageFood = () => {
                   </td>
                   <td>
                     <button
-                      disabled={food?.foodStatus === "delivered"}
+                      disabled={food?.status === "delivered"}
                       onClick={handleDelivered}
                       className="btn btn-success"
                     >

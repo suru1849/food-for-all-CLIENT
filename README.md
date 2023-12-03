@@ -1,8 +1,9 @@
-# React + Vite
+Features of food-for-all websites:-
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+-> User friendly,and comprehensive,
+-> Once can request for food that host another users,also beside this she/he can host any food.
+-> Responsive for small,medium and large devices.
+-> Sort and serach functionality added to access any food fast.
+-> Gives the total statistics on home page.
 
-Currently, two official plugins are available:
-
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+Live-side: https://food-for-all-5a3e3.web.app

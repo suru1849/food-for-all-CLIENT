@@ -1,5 +1,5 @@
 import { Helmet, HelmetProvider } from "react-helmet-async";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import useAuthData from "../../Hooks/useAuthData/useAuthData";
 import { useEffect, useState } from "react";
 import { getAFood, updateFoodStatus } from "../../api/food";
@@ -13,6 +13,7 @@ const FoodDetails = () => {
   const { user } = useAuthData();
   const [openModal, setOpenModal] = useState(false);
   const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     getAFood(id).then((data) => setFood(data));
@@ -67,6 +68,7 @@ const FoodDetails = () => {
       setOpenModal(false);
       setLoading(false);
       // from clear
+      navigate("/my-food-request");
       form.reset();
     }
   };
