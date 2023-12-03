@@ -22,13 +22,13 @@ const ManageFood = () => {
       if (result.isConfirmed) {
         axios
           .put(
-            "http://localhost:5000/requestedFood/update?status=delivered",
+            "https://food-for-all-server.vercel.app/requestedFood/update?status=delivered",
             reqfood
           )
           .then(() => {
             axios
               .put(
-                `http://localhost:5000/availableFood/${food._id}?status=deliverd`,
+                `https://food-for-all-server.vercel.app/availableFood/${food._id}?status=deliverd`,
                 food
               )
               .then(() => {

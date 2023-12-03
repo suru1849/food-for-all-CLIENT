@@ -13,7 +13,7 @@ const FoodDetails = () => {
 
   useEffect(() => {
     axios
-      .get(`http://localhost:5000/availableFood/${id}`, {
+      .get(`https://food-for-all-server.vercel.app/availableFood/${id}`, {
         withCredentials: true,
       })
       .then((res) => {
@@ -55,7 +55,10 @@ const FoodDetails = () => {
 
     // added requested food
     axios
-      .post("http://localhost:5000/requestedFood", requestedFood)
+      .post(
+        "https://food-for-all-server.vercel.app/requestedFood",
+        requestedFood
+      )
       .then((res) => {
         if (res.data.insertedId) {
           Swal.fire({

@@ -10,10 +10,12 @@ const ManageMyFoods = () => {
   const [foods, setFoods] = useState([]);
 
   useEffect(() => {
-    fetch(`http://localhost:5000/availableFood?email=${user?.email}`)
+    fetch(
+      `https://food-for-all-server.vercel.app/availableFood?email=${user?.email}`
+    )
       .then((res) => res.json())
       .then((data) => setFoods(data));
-  }, []);
+  }, [user?.email]);
 
   // Remove
   const handleRemove = (id) => {
@@ -28,9 +30,7 @@ const ManageMyFoods = () => {
     }).then((result) => {
       if (result.isConfirmed) {
         axios
-          .delete(`http://localhost:5000/availableFood/${id}`, {
-            withCredentials: true,
-          })
+          .delete(`https://food-for-all-server.vercel.app/availableFood/${id}`)
           .then((res) => {
             if (res.data.deletedCount) {
               Swal.fire({

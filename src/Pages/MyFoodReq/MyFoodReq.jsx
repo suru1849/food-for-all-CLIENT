@@ -9,28 +9,32 @@ const MyFoodReq = () => {
   const [reqFoods, setReqFoods] = useState([]);
 
   useEffect(() => {
-    fetch(`http://localhost:5000/requestedFood?email=${user?.email}`, {
-      credentials: true,
-    })
+    fetch(
+      `https://food-for-all-server.vercel.app/requestedFood?email=${user?.email}`
+    )
       .then((res) => res.json())
       .then((data) => setReqFoods(data));
   }, [user?.email]);
 
-  const handleCancel = (id) => {
-    axios.delete(`http://localhost:5000/requestedFood/${id}`).then((res) => {
-      if (res.data.deletedCount) {
-        Swal.fire({
-          title: "Success!",
-          text: "Canceled successfully",
-          icon: "success",
-          confirmButtonText: "Ok",
-        });
+  console.log("Requested Food", reqFoods);
 
-        // update ReqFoods
-        const remaining = reqFoods.filter((reqFood) => reqFood._id !== id);
-        setReqFoods(remaining);
-      }
-    });
+  const handleCancel = (id) => {
+    axios
+      .delete(`https://food-for-all-server.vercel.app/requestedFood/${id}`)
+      .then((res) => {
+        if (res.data.deletedCount) {
+          Swal.fire({
+            title: "Success!",
+            text: "Canceled successfully",
+            icon: "success",
+            confirmButtonText: "Ok",
+          });
+
+          // update ReqFoods
+          const remaining = reqFoods.filter((reqFood) => reqFood._id !== id);
+          setReqFoods(remaining);
+        }
+      });
   };
 
   return (

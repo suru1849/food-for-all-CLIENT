@@ -33,19 +33,21 @@ const AddFood = () => {
     };
 
     // add food to the dataBase ---
-    axios.post("http://localhost:5000/availableFood", food).then((res) => {
-      if (res.data.insertedId) {
-        Swal.fire({
-          title: "Success!",
-          text: "Food added successfully",
-          icon: "success",
-          confirmButtonText: "Ok",
-        });
+    axios
+      .post("https://food-for-all-server.vercel.app/availableFood", food)
+      .then((res) => {
+        if (res.data.insertedId) {
+          Swal.fire({
+            title: "Success!",
+            text: "Food added successfully",
+            icon: "success",
+            confirmButtonText: "Ok",
+          });
 
-        // from clear
-        form.reset();
-      }
-    });
+          // from clear
+          form.reset();
+        }
+      });
   };
 
   return (

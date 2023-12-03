@@ -71,15 +71,17 @@ const Router = createBrowserRouter([
         path: "/manage-food/:id",
         element: <ManageFood></ManageFood>,
         loader: ({ params }) =>
-          fetch(`http://localhost:5000/requestedFood?foodId=${params.id}`),
+          fetch(
+            `https://food-for-all-server.vercel.app/requestedFood?foodId=${params.id}`
+          ),
       },
       {
         path: "/edit-food/:id",
         element: <EditFood></EditFood>,
         loader: ({ params }) =>
-          fetch(`http://localhost:5000/availableFood/${params.id}`, {
-            credentials: "include",
-          }),
+          fetch(
+            `https://food-for-all-server.vercel.app/availableFood/${params.id}`
+          ),
       },
     ],
   },

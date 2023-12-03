@@ -11,7 +11,7 @@ const AvailableFoods = () => {
   useEffect(() => {
     axios
       .get(
-        `http://localhost:5000/availableFood?name=${searchItem}&Sort=${sort}&email`
+        `https://food-for-all-server.vercel.app/availableFood?name=${searchItem}&Sort=${sort}&email`
       )
       .then((res) => setFoods(res.data));
   }, [searchItem, sort]);

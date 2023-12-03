@@ -63,9 +63,9 @@ const AuthProvider = ({ children }) => {
       setUser(currentUser);
 
       //  jwt
-      if (currentUser) {
+      if (currentUser?.email) {
         axios
-          .post("http://localhost:5000/jwt", loggedUser, {
+          .post("https://food-for-all-server.vercel.app/jwt", loggedUser, {
             withCredentials: true,
           })
           .then((res) => {
@@ -73,7 +73,7 @@ const AuthProvider = ({ children }) => {
           });
       } else {
         axios
-          .post("http://localhost:5000/logout", loggedUser, {
+          .post("https://food-for-all-server.vercel.app/logout", loggedUser, {
             withCredentials: true,
           })
           .then((res) => console.log(res.data));

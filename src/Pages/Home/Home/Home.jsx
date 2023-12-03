@@ -5,12 +5,13 @@ import { Link } from "react-router-dom";
 import img1 from "../../../assets/image1.png";
 import img2 from "../../../assets/image2.png";
 import img3 from "../../../assets/image5.png";
+import Banner from "../Banner/Banner";
 
 const Home = () => {
   const [foods, setFoods] = useState([]);
 
   useEffect(() => {
-    fetch("http://localhost:5000/availableFood?quantity=1")
+    fetch("https://food-for-all-server.vercel.app/availableFood?quantity=1")
       .then((res) => res.json())
       .then((data) => setFoods(data));
   }, []);
@@ -20,18 +21,8 @@ const Home = () => {
       <Helmet>
         <title>Food For All | Home</title>
       </Helmet>
+      <Banner />
       <div>
-        {/* banner */}
-        <div className="bg-addFoodBanner bg-center h-[50vh] rounded-lg  my-6 flex justify-center items-center text-center">
-          <div>
-            <h1 className="text-2xl md:text-5xl text-white font-extralight">
-              #Share Food, share happiness
-            </h1>
-            <p className="text-base md:text-2xl text-base-300 font-bold">
-              sign-in/log-in to be the part of happiness sharing family
-            </p>
-          </div>
-        </div>
         {/* featured food */}
         <div>
           <h1 className="text-center font-kenia  text-4xl mt-28">
