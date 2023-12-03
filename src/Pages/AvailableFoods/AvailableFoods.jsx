@@ -1,7 +1,7 @@
-import axios from "axios";
 import { useEffect, useState } from "react";
 import AvailableFoodCard from "./AvailableFoodCard";
 import { Helmet, HelmetProvider } from "react-helmet-async";
+import { getAllFoods } from "../../api/food";
 
 const AvailableFoods = () => {
   const [foods, setFoods] = useState([]);
@@ -9,18 +9,13 @@ const AvailableFoods = () => {
   const [searchItem, setSearchItem] = useState("");
 
   useEffect(() => {
-    axios
-      .get(
-        `https://food-for-all-server.vercel.app/availableFood?name=${searchItem}&Sort=${sort}&email`
-      )
-      .then((res) => setFoods(res.data));
-  }, [searchItem, sort]);
+    getAllFoods(sort, searchItem).then((data) => setFoods(data));
+  }, [sort, searchItem]);
 
   const handleSearch = (e) => {
     e.preventDefault();
     const name = e.target.search.value;
     e.target.reset();
-
     setSearchItem(name);
   };
 
@@ -28,7 +23,7 @@ const AvailableFoods = () => {
     e.preventDefault();
 
     if (e.target.value === "1") {
-      setSort(1);
+      setSort(-1);
     } else {
       setSort(0);
     }

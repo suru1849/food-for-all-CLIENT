@@ -14,9 +14,18 @@ export const insertFood = async (food) => {
   return data;
 };
 
-// Get foods
+// Get foods sorted by quantity
 export const getFoodSortedByQNT = async () => {
-  const { data } = await axiosSecure("/foods?sort=quantity");
+  const { data } = await axiosSecure("/foods?quantity=-1");
+
+  return data;
+};
+
+// Get all available foods
+export const getAllFoods = async (sort, searchItem) => {
+  const { data } = await axiosSecure(
+    `/foods?expiredate=${sort}&searchItem=${searchItem}`
+  );
 
   return data;
 };
