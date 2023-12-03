@@ -1,25 +1,40 @@
 import { Helmet, HelmetProvider } from "react-helmet-async";
 import useAuthData from "../../Hooks/useAuthData/useAuthData";
-import axios from "axios";
-import Swal from "sweetalert2";
+import { useState } from "react";
+import LoaderBtn from "../../Components/LoaderBtn/LoaderBtn";
+import { ImSpinner9 } from "react-icons/im";
+import { toast } from "react-hot-toast";
+import { imageUpload } from "../../api/utils";
+import { insertFood } from "../../api/food";
 
 const AddFood = () => {
   const { user } = useAuthData();
+  const [uploadImageName, setUploadImageName] = useState("Upload Image");
+  const [loading, setLoading] = useState(false);
 
-  const handleAddFood = (e) => {
+  // handle Upload image
+  const handleUploadImage = (image) => {
+    setUploadImageName(image.name);
+  };
+
+  const handleAddFood = async (e) => {
+    setLoading(true);
     e.preventDefault();
 
     const form = e.target;
     const foodName = form.foodName.value;
-    const foodImage = form.foodImage.value;
+    const foodImage = form.image.files[0];
     const foodQuantity = form.foodQuantity.value;
     const pickupLocation = form.pickupLocation.value;
     const expiredDateTime = form.expiredDateTime.value;
     const additionalNotes = form.additionalNotes.value;
 
+    // upload image to imgBB
+    const imageURL = await imageUpload(foodImage);
+
     const food = {
       foodName,
-      foodImage,
+      foodImage: imageURL?.data?.display_url,
       foodQuantity: parseInt(foodQuantity),
       pickupLocation,
       expiredDateTime,
@@ -33,21 +48,17 @@ const AddFood = () => {
     };
 
     // add food to the dataBase ---
-    axios
-      .post("https://food-for-all-server.vercel.app/availableFood", food)
-      .then((res) => {
-        if (res.data.insertedId) {
-          Swal.fire({
-            title: "Success!",
-            text: "Food added successfully",
-            icon: "success",
-            confirmButtonText: "Ok",
-          });
+    try {
+      await insertFood(food);
 
-          // from clear
-          form.reset();
-        }
-      });
+      toast.success("Food Added Successfully");
+    } catch (err) {
+      console.log(err);
+      toast.error(err.message);
+    } finally {
+      setLoading(false);
+      form.reset();
+    }
   };
 
   return (
@@ -64,7 +75,7 @@ const AddFood = () => {
       <div className="my-10">
         <form onSubmit={handleAddFood}>
           <div className="grid gap-6 mb-6 md:grid-cols-2">
-            <div>
+            <div className="col-span-2">
               <label
                 htmlFor="first_name"
                 className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
@@ -79,18 +90,20 @@ const AddFood = () => {
                 required
               />
             </div>
-            <div>
+            <div className="form-control p-5 border-4 border-dotted rounded-lg flex justify-center items-center bg-white col-span-2">
               <label
-                htmlFor="last_name"
-                className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                htmlFor="files"
+                className="w-fit rounded-sm px-4 bg-red-400 font-bold text-lg text-white"
               >
-                Food Image
+                {uploadImageName}
               </label>
               <input
-                type="url"
-                name="foodImage"
-                className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                placeholder="food image url"
+                id="files"
+                onChange={(e) => handleUploadImage(e.target.files[0])}
+                name="image"
+                type="file"
+                accept="image/*"
+                style={{ display: "none" }}
                 required
               />
             </div>
@@ -132,7 +145,7 @@ const AddFood = () => {
                 Expired Date/Time
               </label>
               <input
-                type="text"
+                type="date"
                 name="expiredDateTime"
                 className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                 placeholder="expired date/time"
@@ -156,11 +169,13 @@ const AddFood = () => {
             </div>
           </div>
           <div>
-            <input
-              className="btn btn-primary w-full"
-              type="submit"
-              value="Add Food"
-            />
+            <button className="btn btn-primary w-full" type="submit">
+              <LoaderBtn
+                icon={ImSpinner9}
+                label={"Add Food"}
+                loading={loading}
+              />
+            </button>
           </div>
         </form>
       </div>

@@ -6,3 +6,10 @@ export const getSortedFood = async () => {
 
   return data;
 };
+
+// Insert food
+export const insertFood = async (food) => {
+  const { data } = await axiosSecure.post("/foods/insert", food);
+
+  return data;
+};
