@@ -46,7 +46,7 @@ const AvailableFoodCard = ({ food }) => {
             <span className="font-semibold text-red-800">
               Expired Date/Time
             </span>{" "}
-            : {expiredDateTime.split("T")[0]}, {expiredDateTime.split("T")[1]}
+            : {expiredDateTime}
           </p>
           <div>
             <p className="font-normal text-gray-700 dark:text-gray-400">

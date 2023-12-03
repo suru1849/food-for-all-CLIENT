@@ -13,3 +13,10 @@ export const insertFood = async (food) => {
 
   return data;
 };
+
+// Get foods
+export const getFoodSortedByQNT = async () => {
+  const { data } = await axiosSecure("/foods?sort=quantity");
+
+  return data;
+};

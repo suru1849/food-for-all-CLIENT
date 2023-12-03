@@ -1,46 +1,19 @@
-import { useEffect, useState } from "react";
 import { Helmet, HelmetProvider } from "react-helmet-async";
-import AvailableFoodCard from "../../AvailableFoods/AvailableFoodCard";
-import { Link } from "react-router-dom";
 import img1 from "../../../assets/image1.png";
 import img2 from "../../../assets/image2.png";
 import img3 from "../../../assets/image5.png";
 import Banner from "../Banner/Banner";
-import { getSortedFood } from "../../../api/food";
+import FeaturedFoods from "../FeaturedFoods/FeaturedFoods";
 
 const Home = () => {
-  const [foods, setFoods] = useState([]);
-
-  useEffect(() => {
-    getSortedFood().then((data) => {
-      console.log(data);
-      setFoods(data);
-    });
-  }, []);
-
   return (
     <HelmetProvider>
       <Helmet>
         <title>Food For All | Home</title>
       </Helmet>
       <Banner />
+      <FeaturedFoods />
       <div>
-        {/* featured food */}
-        <div>
-          <h1 className="text-center font-kenia  text-4xl mt-28">
-            Featured Foods
-          </h1>
-          <div className="grid gap-5 grid-cols-1 lg:grid-cols-2 my-10">
-            {foods.slice(0, 4).map((food) => (
-              <AvailableFoodCard key={food._id} food={food}></AvailableFoodCard>
-            ))}
-          </div>
-          <div className="flex justify-center items-center mb-10">
-            <Link to="/available-foods" className="btn btn-warning">
-              Show All
-            </Link>
-          </div>
-        </div>
         {/* our servuces */}
         <div>
           <h1 className="text-center font-kenia  text-4xl mt-28">
