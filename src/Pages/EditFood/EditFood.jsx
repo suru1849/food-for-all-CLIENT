@@ -33,7 +33,7 @@ const EditFood = () => {
     const upFood = {
       foodName,
       foodImage,
-      foodQuantity,
+      foodQuantity: parseInt(foodQuantity),
       pickupLocation,
       expiredDateTime,
       additionalNotes,
