@@ -12,6 +12,11 @@ import Private from "../Private/Private";
 import MyFoodReq from "../Pages/MyFoodReq/MyFoodReq";
 import ManageFood from "../Pages/ManageFood/ManageFood";
 import EditFood from "../Pages/EditFood/EditFood";
+import Dashboard from "../Pages/Dashboard/Dashboard";
+import Users from "../Pages/Dashboard/rigthSidePages/Users";
+import DeliveredFoods from "../Pages/Dashboard/rigthSidePages/DeliveredFoods";
+import AvailableFood from "../Pages/Dashboard/rigthSidePages/AvailableFood";
+import DashboardWelcome from "../Pages/Dashboard/rigthSidePages/DashboardWelcome";
 
 const Router = createBrowserRouter([
   {
@@ -74,6 +79,29 @@ const Router = createBrowserRouter([
       {
         path: "/edit-food/:id",
         element: <EditFood></EditFood>,
+      },
+    ],
+  },
+  {
+    path: "dashboard",
+    element: <Dashboard></Dashboard>,
+    errorElement: <Error></Error>,
+    children: [
+      {
+        path: "",
+        element: <DashboardWelcome></DashboardWelcome>,
+      },
+      {
+        path: "user",
+        element: <Users></Users>,
+      },
+      {
+        path: "availableFoods",
+        element: <AvailableFood></AvailableFood>,
+      },
+      {
+        path: "deliveredFood",
+        element: <DeliveredFoods></DeliveredFoods>,
       },
     ],
   },

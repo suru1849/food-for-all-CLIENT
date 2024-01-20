@@ -1,10 +1,18 @@
 import { Avatar, Dropdown, Navbar } from "flowbite-react";
-import { NavLink } from "react-router-dom";
+import { Link, NavLink } from "react-router-dom";
 import "./NavBar.css";
 import useAuthData from "../../Hooks/useAuthData/useAuthData";
+import { getUserStatus } from "../../api/users";
+import { useQuery } from "@tanstack/react-query";
 
 const NavBar = () => {
   const { user, logOut } = useAuthData();
+
+  const { data: status } = useQuery({
+    enabled: !!user?.email,
+    queryFn: async () => await getUserStatus(user?.email),
+    queryKey: ["status"],
+  });
 
   return (
     <>
@@ -30,6 +38,11 @@ const NavBar = () => {
                 </span>
               </Dropdown.Header>
               <Dropdown.Item onClick={logOut}>Sign out</Dropdown.Item>
+              {status === "admin" && (
+                <Dropdown.Item>
+                  <Link to="/dashboard">Dashboard</Link>
+                </Dropdown.Item>
+              )}
             </Dropdown>
           )}
           <Navbar.Toggle />

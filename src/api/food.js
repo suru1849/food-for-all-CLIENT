@@ -22,9 +22,9 @@ export const getFoodSortedByQNT = async () => {
 };
 
 // Get all available foods
-export const getAllFoods = async (sort, searchItem) => {
+export const getAllFoods = async (sort = "", searchItem = "", find = "") => {
   const { data } = await axiosSecure(
-    `/foods?expiredate=${sort}&searchItem=${searchItem}`
+    `/foods?expiredate=${sort}&searchItem=${searchItem}&find=${find}`
   );
 
   return data;

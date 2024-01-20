@@ -1,0 +1,10 @@
+.dashboard {
+   
+    color: #87BA9E;
+    font-weight: bold;
+    border-bottom: 1px solid white;
+}
+
+#dashboard li{
+    padding: 8px;
+}
