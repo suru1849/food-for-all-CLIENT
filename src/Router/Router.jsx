@@ -17,6 +17,7 @@ import Users from "../Pages/Dashboard/rigthSidePages/Users";
 import DeliveredFoods from "../Pages/Dashboard/rigthSidePages/DeliveredFoods";
 import AvailableFood from "../Pages/Dashboard/rigthSidePages/AvailableFood";
 import DashboardWelcome from "../Pages/Dashboard/rigthSidePages/DashboardWelcome";
+import DonateMoney from "../Pages/DonateMoney/DonateMoney";
 
 const Router = createBrowserRouter([
   {
@@ -53,6 +54,15 @@ const Router = createBrowserRouter([
         element: (
           <Private>
             <MyFoodReq></MyFoodReq>
+          </Private>
+        ),
+      },
+      // new page added here
+      {
+        path: "/donate-money",
+        element: (
+          <Private>
+            <DonateMoney></DonateMoney>
           </Private>
         ),
       },

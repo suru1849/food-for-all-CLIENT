@@ -63,6 +63,10 @@ const NavBar = () => {
           <li>
             <NavLink to="/my-food-request">My Food Request</NavLink>
           </li>
+          {/* New Page added here */}
+          <li>
+            <NavLink to="/donate-money">Donate Money</NavLink>
+          </li>
           {!user?.email ? (
             <li>
               <NavLink to="/login">Login</NavLink>
