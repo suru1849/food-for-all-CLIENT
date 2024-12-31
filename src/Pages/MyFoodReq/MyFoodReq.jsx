@@ -5,6 +5,7 @@ import { deleteReqFood, getReqFoods } from "../../api/requestFood";
 import Loader from "../../Components/Loader/Loader";
 import { toast } from "react-hot-toast";
 import { updateFoodStatus } from "../../api/food";
+import Chat from "../../Components/Chat/Chat";
 
 const MyFoodReq = () => {
   const { user } = useAuthData();
@@ -56,6 +57,7 @@ const MyFoodReq = () => {
                   <th>Request Date</th>
                   <th>My Donation Amount</th>
                   <th>Status</th>
+                  <th>Chat With Doner</th>
                   <th>Action</th>
                 </tr>
               </thead>
@@ -86,6 +88,32 @@ const MyFoodReq = () => {
                       } `}
                     >
                       {data?.status}
+                    </td>
+                    <td>
+                      <button
+                        className="btn btn-primary btn-xs"
+                        onClick={() =>
+                          document.getElementById("my_modal_3").showModal()
+                        }
+                      >
+                        Chat
+                      </button>
+
+                      {/* Chat Modal Start */}
+                      <dialog id="my_modal_3" className="modal">
+                        <div className="modal-box">
+                          <form method="dialog">
+                            {/* if there is a button in form, it will close the modal */}
+                            <button className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">
+                              ✕
+                            </button>
+                          </form>
+                          <div className="p-1">
+                            <Chat donar_email={data?.donar?.email} />
+                          </div>
+                        </div>
+                      </dialog>
+                      {/* Chat Modal End */}
                     </td>
                     <td>
                       <button
