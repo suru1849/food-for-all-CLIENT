@@ -19,7 +19,8 @@ const MoneyDonations = () => {
   return (
     <div>
       <h1 className="text-2xl font-bold mt-1 mb-4">
-        Total Donations: <span className="opacity-50">{datas.length}</span>
+        Number of People Donated:{" "}
+        <span className="opacity-50">{datas.length}</span>
       </h1>
       <div className="overflow-x-auto">
         <table className="table">

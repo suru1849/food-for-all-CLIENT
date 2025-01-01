@@ -6,6 +6,7 @@ import Banner from "../Banner/Banner";
 import FeaturedFoods from "../FeaturedFoods/FeaturedFoods";
 import { useEffect, useState } from "react";
 import { getStatistics } from "../../../api/statistics";
+import DistributedDonationSection from "../DistributedDonationSection/DistributedDonationSection";
 
 const Home = () => {
   const [statictic, setStatistics] = useState({});
@@ -73,6 +74,8 @@ const Home = () => {
             </div>
           </div>
         </div>
+        {/* Distributed Donation */}
+        <DistributedDonationSection></DistributedDonationSection>
       </div>
     </HelmetProvider>
   );

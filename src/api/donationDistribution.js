@@ -9,3 +9,10 @@ export const insertDistributionMoney = async (donationMoney) => {
 
   return data;
 };
+
+// Get all donations
+export const getAllDistributedDonations = async () => {
+  const { data } = await axiosSecure("/donationDistribution");
+
+  return data;
+};
