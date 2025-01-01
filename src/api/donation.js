@@ -11,9 +11,16 @@ export const insertDonationMoney = async (donationMoney) => {
   return data;
 };
 
-// Get donations
+// Get all donations
 export const getAllDonations = async () => {
   const { data } = await axiosSecure("/donationMoney");
+
+  return data;
+};
+
+// Get user donations
+export const getAddedDonation = async (email) => {
+  const { data } = await axiosSecure(`/donationMoney/${email}`);
 
   return data;
 };

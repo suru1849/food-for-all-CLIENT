@@ -28,7 +28,10 @@ const Dashboard = () => {
               : "block z-10 absolute bg-gray-300 h-full top-9 left-0"
           } lg:block`}
         >
-          <Link to="/" className="text-3xl font-bold hidden lg:block">
+          <Link
+            to="/"
+            className="text-orange-400 text-3xl font-bold hidden lg:block"
+          >
             Dashboard
           </Link>
           <ul id="dashboard">
@@ -53,7 +56,15 @@ const Dashboard = () => {
                 to="moneyDonations"
                 className={({ isActive }) => (isActive ? "dashboard" : "")}
               >
-                Money Donations
+                R. Donations
+              </NavLink>
+            </li>
+            <li>
+              <NavLink
+                to="monetaryDonations"
+                className={({ isActive }) => (isActive ? "dashboard" : "")}
+              >
+                D. Donations
               </NavLink>
             </li>
           </ul>

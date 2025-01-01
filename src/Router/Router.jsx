@@ -19,6 +19,7 @@ import AvailableFood from "../Pages/Dashboard/rigthSidePages/AvailableFood";
 import DashboardWelcome from "../Pages/Dashboard/rigthSidePages/DashboardWelcome";
 import DonateMoney from "../Pages/DonateMoney/DonateMoney";
 import MoneyDonations from "../Pages/Dashboard/rigthSidePages/MoneyDonations";
+import DDonations from "../Pages/Dashboard/rigthSidePages/DDonations";
 
 const Router = createBrowserRouter([
   {
@@ -117,6 +118,10 @@ const Router = createBrowserRouter([
       {
         path: "moneyDonations",
         element: <MoneyDonations />,
+      },
+      {
+        path: "monetaryDonations",
+        element: <DDonations />,
       },
     ],
   },

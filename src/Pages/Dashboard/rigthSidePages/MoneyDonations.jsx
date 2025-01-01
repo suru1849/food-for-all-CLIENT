@@ -6,17 +6,13 @@ import Loader from "../../../Components/Loader/Loader";
 const MoneyDonations = () => {
   const { user } = useAuthData();
 
-  const {
-    data: datas = [],
-    isLoading,
-    refetch,
-  } = useQuery({
+  const { data: datas = [], isLoading } = useQuery({
     enabled: !!user?.email,
     queryFn: async () => await getAllDonations(),
     queryKey: ["datas"],
   });
 
-  console.log(datas);
+  //   console.log(datas);
 
   if (isLoading) return <Loader />;
 
@@ -38,7 +34,37 @@ const MoneyDonations = () => {
               <th>TransactionID</th>
             </tr>
           </thead>
-          <tbody>{/* row 1 */}</tbody>
+          <tbody>
+            {/* row 1 */}
+            {datas?.map((data) => (
+              <tr key={data?._id}>
+                <td>
+                  <div className="avatar">
+                    <div className="mask mask-squircle w-16 h-16 lg:w-20 lg:h-20">
+                      <img src={data?.donatorImage} alt="Food Image" />
+                    </div>
+                  </div>
+                </td>
+                <td>
+                  <div>
+                    <div className="font-bold">{data?.donatorName}</div>
+                  </div>
+                </td>
+                <td>
+                  <div className="font-bold">{data?.donatorEmail}</div>
+                </td>
+                <td>
+                  <div className="font-bold">{data?.donatedAmount}</div>
+                </td>
+                <td>
+                  <div className="font-bold">{data?.donationSector}</div>
+                </td>
+                <td>
+                  <div className="font-bold">{data?.transactionID}</div>
+                </td>
+              </tr>
+            ))}
+          </tbody>
         </table>
       </div>
     </div>

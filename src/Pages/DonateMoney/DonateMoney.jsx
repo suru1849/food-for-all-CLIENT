@@ -5,11 +5,25 @@ import toast from "react-hot-toast";
 import LoaderBtn from "../../Components/LoaderBtn/LoaderBtn";
 import { ImSpinner9 } from "react-icons/im";
 import useAuthData from "../../Hooks/useAuthData/useAuthData";
-import { insertDonationMoney } from "../../api/donation";
+import { getAddedDonation, insertDonationMoney } from "../../api/donation";
+import Loader from "../../Components/Loader/Loader";
+import { useQuery } from "@tanstack/react-query";
 
 function DonateMoney() {
   const [loading, setLoading] = useState(false);
   const { user } = useAuthData();
+
+  const {
+    data: datas = [],
+    isLoading,
+    refetch,
+  } = useQuery({
+    enabled: !!user?.email,
+    queryFn: async () => await getAddedDonation(user?.email),
+    queryKey: ["datas"],
+  });
+
+  console.log(datas);
 
   const handleDonate = async (e) => {
     setLoading(true);
@@ -45,18 +59,62 @@ function DonateMoney() {
       toast.error(err.message);
     } finally {
       setLoading(false);
+      refetch();
       form.reset();
     }
   };
+
+  if (isLoading) return <Loader />;
 
   return (
     <HelmetProvider>
       <Helmet>
         <title>Food For All | Donate Money</title>
       </Helmet>
-      <div className="min-h-screen flex flex-col justify-center ">
+      <div className="min-h-screen flex flex-col-reverse justify-center ">
         {/* All donations */}
-        <div>all donation</div>
+        {datas.length > 0 ? (
+          <div className="my-10">
+            <hr className="border mb-14" />
+            <div className="text-center">
+              <h1 className="text-3xl lg:text-4xl font-bold text-orange-400">
+                Your Total Donations
+              </h1>
+            </div>
+            <div className="overflow-x-auto">
+              <table className="table">
+                {/* head */}
+                <thead>
+                  <tr>
+                    <th></th>
+                    <th>Donated Amount</th>
+                    <th>Donation Sector</th>
+                    <th>TransactionID</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {/* row 1 */}
+                  {datas?.map((data, index) => (
+                    <tr key={data?._id}>
+                      <td className="text-bold text-xl">{index + 1}.</td>
+                      <td>
+                        <div className="font-bold">{data?.donatedAmount}</div>
+                      </td>
+                      <td>
+                        <div className="font-bold">{data?.donationSector}</div>
+                      </td>
+                      <td>
+                        <div className="font-bold">{data?.transactionID}</div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        ) : (
+          ""
+        )}
         {/* donate Money*/}
         <div>
           <div className="text-center my-7">
@@ -122,7 +180,7 @@ function DonateMoney() {
                 </div>
               </div>
               <div>
-                <button className="btn btn-primary w-full my-7" type="submit">
+                <button className="btn btn-primary w-full mt-7" type="submit">
                   <LoaderBtn
                     icon={ImSpinner9}
                     label={"Donate"}
