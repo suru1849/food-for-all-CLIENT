@@ -16,7 +16,7 @@ const Dashboard = () => {
             <GiCrossMark onClick={() => setSideBar(!sideBar)} size={24} />
           )}
 
-          <h1 className="text-3xl font-bold">Dashboard</h1>
+          <h1 className="text-3xl text-orange-400 font-bold">Dashboard</h1>
         </div>
       </div>
       <div className="p-3 flex bg-gradient-to-r from-[#DCD9C6] to-[#87BA9E] min-h-screen">
@@ -46,6 +46,14 @@ const Dashboard = () => {
                 className={({ isActive }) => (isActive ? "dashboard" : "")}
               >
                 Available Food
+              </NavLink>
+            </li>
+            <li>
+              <NavLink
+                to="moneyDonations"
+                className={({ isActive }) => (isActive ? "dashboard" : "")}
+              >
+                Money Donations
               </NavLink>
             </li>
           </ul>

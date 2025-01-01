@@ -42,6 +42,7 @@ function Chat({ requester_email, donar_email }) {
     });
 
     return () => unsuscribe();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   console.log(messages);
