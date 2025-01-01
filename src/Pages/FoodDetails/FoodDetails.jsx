@@ -24,7 +24,7 @@ const FoodDetails = () => {
     e.preventDefault();
 
     const form = e.target;
-    const donationMoney = form.donationMoney.value;
+    // const donationMoney = form.donationMoney.value;
     const AdditionlNotes = form.AdditionlNotes.value;
     const requestedDate = form.requestedDate.value;
 
@@ -34,7 +34,7 @@ const FoodDetails = () => {
         image: user?.photoURL,
         name: user?.displayName,
       },
-      donationMoney,
+      // donationMoney: donationMoney,
       AdditionlNotes,
       requestedDate,
       status: "pending",

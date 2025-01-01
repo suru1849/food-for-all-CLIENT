@@ -172,7 +172,7 @@ const RequestFoodModal = ({
                     required
                   />
                 </div>
-                <div>
+                {/* <div>
                   <label
                     htmlFor="visitors"
                     className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
@@ -186,7 +186,7 @@ const RequestFoodModal = ({
                     placeholder="donation money"
                     required
                   />
-                </div>
+                </div> */}
               </div>
               <div>
                 <button className="btn btn-primary w-full" type="submit">
